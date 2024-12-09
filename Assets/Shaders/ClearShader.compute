@@ -1,0 +1,17 @@
+#pragma kernel CSMain
+
+RWTexture2D<int> DepthTexture;
+RWTexture2D<half4> MotionTexture;
+
+[numthreads(16, 16, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    int width, height;
+    DepthTexture.GetDimensions(width, height);
+    int2 pixelCoord = int2(id.xy);
+    if (pixelCoord.x >= width || pixelCoord.y >= height)
+        return;
+
+    DepthTexture[id.xy] = -1;
+    MotionTexture[id.xy] = half4(-1.0, -1.0, -1.0, -1.0);
+}
